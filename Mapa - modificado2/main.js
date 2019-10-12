@@ -1,4 +1,4 @@
-var cidade,oReq,reqListener,result,resposta,resposta1,obj,cordinate,cordinate1,compilado,link1,link2,link3,link4,n;
+var oReq,result,resposta1,obj,cordinate,cordinate1;
 
 function map(){
 	var mymap = L.map('mapid').setView([cordinate,cordinate1], 15);
@@ -9,8 +9,9 @@ function map(){
 			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 		id: 'mapbox.streets'
 	}).addTo(mymap);
+	var city = getcity();
 	L.marker([cordinate,cordinate1]).addTo(mymap)
-		.bindPopup("<b>Seja Bem vindo!</b><br />Você está em :"+cidade).openPopup();
+		.bindPopup("<b>Seja Bem vindo!</b><br />Você está em :"+city).openPopup();
 	L.circle([cordinate,cordinate1], 400, {
 		color: 'red',
 		fillColor: '#f03',
@@ -32,52 +33,61 @@ function map(){
 */
     //mymap.on('click', onMapClick);
 }
-function getcity(){
-	cidade = document.getElementById("digitado").value;
+
+var pegarcidade = function(){
+	var cidade = document.getElementById("digitado").value;
+	return cidade;
 }
 
 function reqListener () {
-	resposta = this.responseText; 
-	//console.log (resposta);
+	var Req = this.responseText; 
+	return Req;
 }
-//function compiler (){
-//	obj = JSON.parse(resposta);
-//}
 
-function testar (){
-    oReq = new XMLHttpRequest();
-	oReq.onload = reqListener;
+/*function compiler (){
+	obj = JSON.parse(resposta);
+var cidade = pegarcidade()*/
+
+var testar = function(){
+	var cidade = pegarcidade();
+	var oReq = new XMLHttpRequest;
+	oReq.onload = reqListener();
     oReq.open("get","https://api.mapbox.com/geocoding/v5/mapbox.places/"+cidade+".json?access_token=sk.eyJ1Ijoib3J1YW4iLCJhIjoiY2sxYmEwbW53MDJpeDNvcGN4Mm5mYWYwciJ9.wuSyAqEfN8SFraG1v9jE8Q");
+	var resposta;
 	oReq.onreadystatechange = function(e){
-		// console.log(this.readyState);
-		 if (this.readyState == 4){
-			resposta1 = JSON.parse(this.responseText);
-		 }
-	 }
+		if (this.readyState == 4){
+			resposta = JSON.parse(reqListener());
+		}	
+	}
 	oReq.send();
+	return resposta;
 }
-function pegarValores(){
+function pegarValores(objdata){
+	var cordinate = objdata.features[0].center[1];
+	var cordinate1 = objdata.features[0].center[0];
+	return cordinate,codinate1;
+}
+
+/*= function pegarValores(){
 	cordinate = resposta1.features[0].center[1];
 	cordinate1 = resposta1.features[0].center[0];
 	console.log(cordinate,cordinate1);
 }
+*/
 
 /*function mostrarl(){
-    link1 =  document.getElementById("link1");
+    var link1 =  document.getElementById("link1");
 	link1.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
 	
-	link2 =  document.getElementById("link2");
+	var link2 =  document.getElementById("link2");
     link2.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
 	
-	link3 =  document.getElementById("link3");
+	var link3 =  document.getElementById("link3");
 	link3.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
 	
-	link4 =  document.getElementById("link4");
+	var link4 =  document.getElementById("link4");
     link4.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
 }*/
-
 function main(){
-	getcity();
 	testar();
-	pegarValores();
 }
