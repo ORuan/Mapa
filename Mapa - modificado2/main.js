@@ -1,5 +1,3 @@
-var oReq,result,resposta1,obj,cordinate,cordinate1;
-
 function map(){
 	var mymap = L.map('mapid').setView([cordinate,cordinate1], 15);
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY2ZsYmVkdWNhdG9yIiwiYSI6ImNrMTZrYm1vNTA1dWEzaGxqN2tmMTZlazcifQ.XXsWkpgiguegb-C7WQpGBA', {
@@ -39,33 +37,50 @@ var pegarcidade = function(){
 	return cidade;
 }
 
-function reqListener () {
-	var Req = this.responseText; 
-	return Req;
+ function reqListener() {
+	var request = this.responseText; 
+	return request;
 }
 
-/*function compiler (){
-	obj = JSON.parse(resposta);
-var cidade = pegarcidade()*/
 
 var testar = function(){
-	var cidade = pegarcidade();
-	var oReq = new XMLHttpRequest;
-	oReq.onload = reqListener();
-    oReq.open("get","https://api.mapbox.com/geocoding/v5/mapbox.places/"+cidade+".json?access_token=sk.eyJ1Ijoib3J1YW4iLCJhIjoiY2sxYmEwbW53MDJpeDNvcGN4Mm5mYWYwciJ9.wuSyAqEfN8SFraG1v9jE8Q");
-	var resposta;
-	oReq.onreadystatechange = function(e){
-		if (this.readyState == 4){
-			resposta = JSON.parse(reqListener());
-		}	
-	}
+	cidade = pegarcidade();
+	var oReq = new XMLHttpRequest();
+	var url = ('https://api.mapbox.com/geocoding/v5/mapbox.places/"+cidade".json?access_token=sk.eyJ1Ijoib3J1YW4iLCJhIjoiY2sxYmEwbW53MDJpeDNvcGN4Mm5mYWYwciJ9.wuSyAqEfN8SFraG1v9jE8Q');
+	oReq.open('GET',url,true);
+	var resposta = reqListener()	;
 	oReq.send();
+	console.log (resposta);
 	return resposta;
 }
-function pegarValores(objdata){
-	var cordinate = objdata.features[0].center[1];
-	var cordinate1 = objdata.features[0].center[0];
-	return cordinate,codinate1;
+var compiler = function(){
+	var resposta = testar();
+	var obj = JSON.parse(resposta);
+	return obj;
+}	
+		
+var pegarValores = function(){
+	resposta = compiler();
+	
+	cordinate = resposta.features[0].center[1];
+	cordinate1 = resposta.features[0].center[0];
+
+	cordinate1 = resposta.features[1].center[1];
+	cordinate2 = resposta.features[1].center[0];
+
+	cordinate3= resposta.features[2].center[1];
+	cordinate4 = resposta.features[2].center[0];
+
+	cordinate5 = resposta.features[3].center[1];
+	cordinate6 = resposta.features[3].center[0];
+
+	cordinate7 = resposta.features[4].center[1];
+	cordinate8 = resposta.features[4].center[0];
+
+
+	return {cordinate,cordinate1,cordinate2,cordinate3,
+			cordinate4,cordinate5,cordinate6,cordinate7,
+			cordinate8};
 }
 
 /*= function pegarValores(){
@@ -90,4 +105,6 @@ function pegarValores(objdata){
 }*/
 function main(){
 	testar();
+	pegarValores();
+	compiler();
 }
