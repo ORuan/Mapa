@@ -37,30 +37,28 @@ var pegarcidade = function(){
 	return cidade;
 }
 
- function reqListener() {
+function reqListener() {
 	var request = this.responseText; 
 	return request;
 }
 
 
-var testar = function(){
-	cidade = pegarcidade();
-	var oReq = new XMLHttpRequest();
-	var url = ('https://api.mapbox.com/geocoding/v5/mapbox.places/"+cidade".json?access_token=sk.eyJ1Ijoib3J1YW4iLCJhIjoiY2sxYmEwbW53MDJpeDNvcGN4Mm5mYWYwciJ9.wuSyAqEfN8SFraG1v9jE8Q');
-	oReq.open('GET',url,true);
-	var resposta = reqListener()	;
+function testar (){
+	var cidade = pegarcidade();
+    oReq = new XMLHttpRequest();
+    oReq.onload = reqListener;
+    oReq.open("get","https://api.mapbox.com/geocoding/v5/mapbox.places/"+cidade+".json?access_token=sk.eyJ1Ijoib3J1YW4iLCJhIjoiY2sxYmEwbW53MDJpeDNvcGN4Mm5mYWYwciJ9.wuSyAqEfN8SFraG1v9jE8Q");
 	oReq.send();
-	console.log (resposta);
-	return resposta;
+	oReq.onreadystatechange = function(e) {
+        if(this.readyState == 4){
+        	resposta = JSON.parse(this.responseText);
+			console.log(resposta);
+			pegarValores();
+		}
+	}
 }
-var compiler = function(){
-	var resposta = testar();
-	var obj = JSON.parse(resposta);
-	return obj;
-}	
-		
+var resposta;
 var pegarValores = function(){
-	resposta = compiler();
 	
 	cordinate = resposta.features[0].center[1];
 	cordinate1 = resposta.features[0].center[0];
@@ -68,7 +66,7 @@ var pegarValores = function(){
 	cordinate1 = resposta.features[1].center[1];
 	cordinate2 = resposta.features[1].center[0];
 
-	cordinate3= resposta.features[2].center[1];
+	cordinate3 = resposta.features[2].center[1];
 	cordinate4 = resposta.features[2].center[0];
 
 	cordinate5 = resposta.features[3].center[1];
@@ -83,16 +81,8 @@ var pegarValores = function(){
 			cordinate8};
 }
 
-/*= function pegarValores(){
-	cordinate = resposta1.features[0].center[1];
-	cordinate1 = resposta1.features[0].center[0];
-	console.log(cordinate,cordinate1);
-}
-*/
-
-/*function mostrarl(){
-    var link1 =  document.getElementById("link1");
-	link1.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
+function mostrarl(){
+	document.getElementById("link1").innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate,cordinate1;
 	
 	var link2 =  document.getElementById("link2");
     link2.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
@@ -102,9 +92,7 @@ var pegarValores = function(){
 	
 	var link4 =  document.getElementById("link4");
     link4.innerHTML = "Foram encontrados resultados nas seguintes cordenadas "+cordinate;
-}*/
+}
 function main(){
 	testar();
-	pegarValores();
-	compiler();
 }
